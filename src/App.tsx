@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Calendar, Coffee, Compass, MessageCircle, ChevronRight, Plane, Send, Star, Mail, ChevronLeft, Clock, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Logo } from './components/Logo';
+import { fetchBookings, createBooking } from './firebase';
 
 export default function App() {
   const [formData, setFormData] = useState({
@@ -21,20 +22,16 @@ export default function App() {
   const [bookedSlots, setBookedSlots] = useState<{ date: string; time: string }[]>([]);
 
   useEffect(() => {
-    fetchBookedSlots();
-  }, []);
-
-  const fetchBookedSlots = async () => {
-    try {
-      const response = await fetch('/api/booked-slots');
-      if (response.ok) {
-        const data = await response.json();
+    const loadBookedSlots = async () => {
+      try {
+        const data = await fetchBookings();
         setBookedSlots(data);
+      } catch (error) {
+        console.error("Failed to fetch booked slots:", error);
       }
-    } catch (error) {
-      console.error("Failed to fetch booked slots:", error);
-    }
-  };
+    };
+    loadBookedSlots();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,22 +42,30 @@ export default function App() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/book-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      await createBooking(formData);
+      
+      const subject = encodeURIComponent(`New Session Booking from ${formData.name}`);
+      const body = encodeURIComponent(`Name: ${formData.name}
+Email: ${formData.email}
+Phone: ${formData.phone}
+Dates: ${formData.dates}
+Travellers: ${formData.travellers}
+Style: ${formData.style}
+Focus Area: ${formData.message}
 
-      if (response.ok) {
-        setIsSubmitted(true);
-        fetchBookedSlots(); // Refresh slots
-      } else {
-        const data = await response.json();
-        alert(data.error || "Failed to book session. Please try again.");
-      }
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert("Something went wrong. Please try again.");
+Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
+      
+      window.location.href = `mailto:youniquelyafrica@gmail.com?subject=${subject}&body=${body}`;
+
+      setIsSubmitted(true);
+      setFormData({
+        name: '', email: '', phone: '', dates: '', travellers: '', style: '',
+        message: '', selectedDate: '', selectedTime: ''
+      });
+      const data = await fetchBookings();
+      setBookedSlots(data);
+    } catch (error: any) {
+      alert(error.message || "Failed to book session. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
