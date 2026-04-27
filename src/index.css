@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  
+  /* Brand Palette */
+  --color-brand-olive: #758a48;
+  --color-brand-olive-light: #899d5e;
+  --color-brand-deep-blue: #004560;
+  --color-brand-deep-red: #4f2121;
+  --color-brand-earth: #824819;
+  --color-brand-cream: #ddd1bc;
+  --color-brand-teal: #144f55;
+  
+  --color-olive-50: #f6f7f4;
+  --color-olive-100: #e9ece1;
+  --color-olive-200: #ddd1bc;
+  --color-olive-300: #b3bc9d;
+  --color-olive-400: #8e9a72;
+  --color-olive-500: #899d5e;
+  --color-olive-600: #758a48;
+  --color-olive-700: #144f55;
+  --color-olive-800: #004560;
+  --color-olive-900: #4f2121;
+  --color-olive-950: #191d15;
+
+  --color-earth-50: #fbf9f7;
+  --color-earth-100: #ddd1bc;
+  --color-earth-200: #e6d5c3;
+  --color-earth-300: #d4bda1;
+  --color-earth-400: #824819;
+  --color-earth-500: #b35a44;
+  --color-earth-600: #4f2121;
+}

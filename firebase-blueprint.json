@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Booking": {
+      "title": "Booking",
+      "description": "Details of a photo session booking",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Client name" },
+        "email": { "type": "string", "format": "email", "description": "Client email" },
+        "phone": { "type": "string", "description": "Client phone number" },
+        "dates": { "type": "string", "description": "Preferred trip dates" },
+        "travellers": { "type": "string", "description": "Number of travellers" },
+        "style": { "type": "string", "description": "Photo shoot style" },
+        "message": { "type": "string", "description": "Additional notes" },
+        "selectedDate": { "type": "string", "description": "Final selected date (YYYY-MM-DD)" },
+        "selectedTime": { "type": "string", "description": "Final selected time (HH:mm)" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the booking was created" }
+      },
+      "required": ["name", "email", "selectedDate", "selectedTime", "createdAt"]
+    }
+  },
+  "firestore": {
+    "bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Photo session bookings"
+    }
+  }
+}

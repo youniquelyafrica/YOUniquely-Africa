@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helpers
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && 
+             (request.auth.token.email == 'tvzyl.hanab@gmail.com' || request.auth.token.email == 'familievanzyl8@gmail.com') && 
+             request.auth.token.email_verified == true;
+    }
+
+    function isValidBooking(data) {
+      return data.keys().hasAll(['name', 'email', 'selectedDate', 'selectedTime', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.email is string && data.email.size() > 0 && data.email.size() <= 255 &&
+             data.selectedDate is string && data.selectedDate.matches('^\\d{4}-\\d{2}-\\d{2}$') &&
+             data.selectedTime is string && data.selectedTime.matches('^\\d{2}:\\d{2}$') &&
+             data.createdAt is timestamp;
+    }
+
+    // Bookings collection
+    match /bookings/{bookingId} {
+      // Only admins can see the full list or get specific bookings
+      allow get, list: if isAdmin();
+      
+      // Anyone can create a booking (if it's valid)
+      allow create: if isValidId(bookingId) && 
+                      isValidBooking(request.resource.data) && 
+                      request.resource.data.createdAt == request.time;
+      
+      // Only admins can update or delete
+      allow update, delete: if isAdmin();
+    }
+
+    // Slots collection (alias or for future use)
+    match /slots/{slotId} {
+      allow read: if true; // Publicly readable for availability
+      allow write: if isAdmin();
+    }
+  }
+}
