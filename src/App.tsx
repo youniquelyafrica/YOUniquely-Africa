@@ -28,7 +28,7 @@ export default function App() {
     selectedDate: '',
     selectedTime: ''
   });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedBooking, setSubmittedBooking] = useState<{date: string, time: string} | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState<number | null>(null);
@@ -58,7 +58,40 @@ export default function App() {
     setIsSubmitting(true);
     try {
       await createBooking(formData);
-      setIsSubmitted(true);
+      
+      // Attempt to send email via Web3Forms if the user added the key
+      if (import.meta.env.VITE_WEB3FORMS_KEY) {
+        try {
+          await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              access_key: import.meta.env.VITE_WEB3FORMS_KEY,
+              subject: `New Session Booking from ${formData.name}`,
+              from_name: 'Youniquely Africa Website',
+              to_email: 'book@youniquelyafrica.com',
+              name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+              dates: formData.dates,
+              travellers: formData.travellers,
+              style: formData.style,
+              message: formData.message,
+              selectedDate: formData.selectedDate,
+              selectedTime: formData.selectedTime,
+            })
+          });
+        } catch (emailErr) {
+          console.error("Failed to send email notification", emailErr);
+        }
+      } else {
+        console.warn("VITE_WEB3FORMS_KEY is not set. Email notification was not sent. Please register at web3forms.com and add the key to your .env / Netlify environment variables.");
+      }
+
+      setSubmittedBooking({ date: formData.selectedDate, time: formData.selectedTime });
       setFormData({
         name: '', email: '', phone: '', dates: '', travellers: '', style: '',
         message: '', selectedDate: '', selectedTime: ''
@@ -649,7 +682,7 @@ export default function App() {
           </div>
           
           <div className="bg-olive-50 rounded-[2rem] p-8 md:p-12 shadow-sm border border-stone-200">
-            {isSubmitted ? (
+            {submittedBooking ? (
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }} 
                 animate={{ opacity: 1, scale: 1 }} 
@@ -659,7 +692,7 @@ export default function App() {
                   <span className="text-5xl">🌍</span>
                 </div>
                 <h3 className="text-4xl font-serif font-bold text-brand-deep-red mb-4">Dankjewel!</h3>
-                <p className="text-stone-600 text-xl font-light">Your session is requested for {formData.selectedDate} at {formData.selectedTime}. I'll be in touch within 24 hours to confirm!</p>
+                <p className="text-stone-600 text-xl font-light">Your session is requested for {submittedBooking.date} at {submittedBooking.time}. I'll be in touch within 24 hours to confirm!</p>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-8">
