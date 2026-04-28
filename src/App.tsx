@@ -55,7 +55,7 @@ Focus Area: ${formData.message}
 
 Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
       
-      window.location.href = `mailto:youniquelyafrica@gmail.com?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:book@youniquelyafrica.com?subject=${subject}&body=${body}`;
 
       setIsSubmitted(true);
       setFormData({
@@ -189,7 +189,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
           <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
             <iframe 
               src="https://www.youtube.com/embed/VzqWO5EaSps?autoplay=1&mute=1&loop=1&playlist=VzqWO5EaSps&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=12" 
-              className="absolute top-1/2 left-1/2 w-[100vw] h-[100vh] min-w-[177.77vh] min-h-[56.25vw] -translate-x-1/2 -translate-y-[52%] scale-115 opacity-70"
+              className="absolute top-1/2 left-1/2 w-[100vw] h-[100vh] min-w-[177.77vh] min-h-[56.25vw] -translate-x-1/2 -translate-y-[45%] scale-[1.2] opacity-70"
               allow="autoplay; encrypted-media"
               frameBorder="0"
               title="South Africa Drone Footage"
@@ -224,7 +224,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
         </div>
 
         {/* Video Credit Caption */}
-        <div className="absolute bottom-8 right-8 z-20 text-white/30 text-[10px] font-light tracking-widest uppercase hidden md:block">
+        <div className="absolute bottom-8 left-8 z-20 text-white/30 text-[10px] font-light tracking-widest uppercase hidden md:block text-left">
           Drone footage by Scenic Relaxation
         </div>
       </motion.section>
@@ -619,7 +619,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
             {/* Card 5: Diverse landscapes */}
             <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
               <img 
-                src="/landscapes.jpg"
+                src="/landscapes.JPG"
                 alt="Drakensberg Mountains South Africa"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
@@ -1010,14 +1010,23 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
                 Your trip, personalised.
               </p>
             </div>
-            <div className="flex flex-col md:flex-row gap-6 md:justify-end">
-              <a href="mailto:youniquelyafrica@gmail.com" className="flex items-center gap-3 hover:text-white transition-colors">
-                <Mail className="w-5 h-5" /> youniquelyafrica@gmail.com
-              </a>
+            <div className="flex flex-col md:justify-end items-start md:items-end">
+              <div className="flex flex-col gap-4 text-stone-300 font-light">
+                <div className="flex items-start md:items-center gap-3">
+                  <MapPin className="w-5 h-5 shrink-0 mt-0.5 md:mt-0" />
+                  <span>Kilwijkstraat, Dordrecht, Netherlands, 3311 WN</span>
+                </div>
+                <a href="tel:+31615480472" className="flex items-center gap-3 hover:text-white transition-colors">
+                  <Phone className="w-5 h-5 shrink-0" /> +31 6 15480472
+                </a>
+                <a href="mailto:book@youniquelyafrica.com" className="flex items-center gap-3 hover:text-white transition-colors">
+                  <Mail className="w-5 h-5 shrink-0" /> book@youniquelyafrica.com
+                </a>
+              </div>
             </div>
           </div>
           <div className="pt-8 border-t border-stone-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-light">
-            <p>© {new Date().getFullYear()} YOUniquely Africa.</p>
+            <p>© {new Date().getFullYear()} YOUniquely Africa | KVK: 42047666</p>
           </div>
         </div>
       </footer>

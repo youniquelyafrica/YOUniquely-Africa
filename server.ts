@@ -109,9 +109,9 @@ async function startServer() {
     }
 
     // Send Email Simulation
-    // The user wants it linked to: youniquelyafrica@gmail.com
+    // The user wants it linked to: book@youniquelyafrica.com
     console.log(`[EMAIL SENDING SIMULATION]`);
-    console.log(`To: youniquelyafrica@gmail.com`);
+    console.log(`To: book@youniquelyafrica.com`);
     console.log(`Subject: New Session Booking from ${name}`);
     console.log(`Body:
       Name: ${name}
