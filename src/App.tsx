@@ -1,8 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Calendar, Coffee, Compass, MessageCircle, ChevronRight, Plane, Send, Star, Mail, ChevronLeft, Clock, Phone } from 'lucide-react';
+import { MapPin, Calendar, Coffee, Compass, MessageCircle, ChevronRight, Plane, Send, Star, Mail, ChevronLeft, Clock, Phone, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Logo } from './components/Logo';
 import { fetchBookings, createBooking } from './firebase';
+
+const discoverCards = [
+  { id: 1, title: 'Wildlife', imgSrc: '/wildlife.jpg', text: 'Experience the thrill of spotting the Big Five (and so much more) in their natural, untamed habitat.', alt: 'South African Lion', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
+  { id: 2, title: 'Cuisine', imgSrc: '/cuisine.jpg', text: 'From traditional braais to Cape Malay spices, discover a world of vibrant flavours.', alt: 'South African Cuisine Braai', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 3, title: 'Coastlines', imgSrc: '/coastlines.jpg', text: 'Explore pristine beaches and dramatic cliffs where two oceans meet.', alt: 'South African Coastline', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 4, title: 'Golden sunsets', imgSrc: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=2072&auto=format&fit=crop', text: "Watch the African sky catch fire with breathtaking sunsets you'll never forget.", alt: 'African Golden Sunset', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
+  { id: 5, title: 'Diverse landscapes', imgSrc: '/landscapes.jpg', text: 'From red desert dunes to lush green forests and towering mountain peaks.', alt: 'Drakensberg Mountains South Africa', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 6, title: 'World class wine', imgSrc: '/wine.jpg', text: 'Sip award-winning vintages in the historic, oak-lined vineyards of the Cape.', alt: 'South African Winelands Vineyard and Wine Glass', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 7, title: 'Sleepy towns', imgSrc: '/towns.jpg', text: 'Discover the charm of quiet coastal villages and historic Karoo dorps.', alt: 'South African Karoo Town', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
+  { id: 8, title: 'History & Culture', imgSrc: '/history.jpg', text: 'A rich tapestry of stories and traditions that shape the vibrant soul of the continent.', alt: 'Bo-Kaap Cape Town History', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 9, title: 'Art', imgSrc: '/art.webp', text: 'Discover contemporary masterpieces and ancient rock art in local galleries and beyond.', alt: 'South African Art Gallery', colSpan: 'col-span-1 md:col-span-1', showArrow: false }
+];
 
 export default function App() {
   const [formData, setFormData] = useState({
@@ -18,6 +30,9 @@ export default function App() {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState<number | null>(null);
+  const [activeDiscoverCard, setActiveDiscoverCard] = useState<number | null>(null);
   const [currentCalendarDate, setCurrentCalendarDate] = useState(new Date());
   const [bookedSlots, setBookedSlots] = useState<{ date: string; time: string }[]>([]);
 
@@ -55,7 +70,14 @@ Focus Area: ${formData.message}
 
 Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
       
-      window.location.href = `mailto:book@youniquelyafrica.com?subject=${subject}&body=${body}`;
+      try {
+        const link = document.createElement('a');
+        link.href = `mailto:book@uniquelyafrica.com?subject=${subject}&body=${body}`;
+        link.target = '_blank';
+        link.click();
+      } catch (mailtoErr) {
+        console.warn("Could not open mail client", mailtoErr);
+      }
 
       setIsSubmitted(true);
       setFormData({
@@ -153,7 +175,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
       <nav className="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-brand-olive/90 backdrop-blur-md border-b border-white/10 transition-all">
         <div className="flex items-center gap-3">
           <Logo className="w-10 h-10" />
-          <div className="text-2xl font-serif font-bold text-white tracking-wide hidden sm:block">
+          <div className="text-xl sm:text-2xl font-serif font-bold text-white tracking-wide">
             YOU<span className="text-brand-earth">niquely Africa</span>
           </div>
         </div>
@@ -168,13 +190,37 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
           <a href="#contact" className="hover:text-white transition-colors">Book</a>
         </div>
 
-        {/* Mobile Nav (Simplified) */}
-        <div className="flex md:hidden items-center gap-4">
-          <a href="#hero" className="text-sm font-medium text-white">Home</a>
-          <a href="#agent" className="text-sm font-medium text-white">Agent</a>
-          <a href="#contact" className="text-sm font-medium text-white">Book</a>
-        </div>
+        {/* Mobile Nav Toggle */}
+        <button 
+          className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors focus:outline-none"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle Navigation Options"
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </nav>
+
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-[72px] left-0 w-full bg-brand-olive/95 backdrop-blur-md shadow-xl z-40 md:hidden border-b border-white/10"
+          >
+            <div className="flex flex-col py-6 px-8 gap-6">
+              <a href="#hero" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white hover:text-brand-earth transition-colors">Home</a>
+              <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white hover:text-brand-earth transition-colors">About</a>
+              <a href="#agent" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white hover:text-brand-earth transition-colors">Agent</a>
+              <a href="#how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white hover:text-brand-earth transition-colors">How it works</a>
+              <a href="#destinations" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white hover:text-brand-earth transition-colors">Discover</a>
+              <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-brand-earth hover:text-white transition-colors">Book Your Session</a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <motion.section 
@@ -221,11 +267,6 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
             <span className="hidden sm:inline text-brand-olive-light">•</span>
             <span>Direct contact with your planner</span>
           </div>
-        </div>
-
-        {/* Video Credit Caption */}
-        <div className="absolute bottom-8 left-8 z-20 text-white/30 text-[10px] font-light tracking-widest uppercase hidden md:block text-left">
-          Drone footage by Scenic Relaxation
         </div>
       </motion.section>
 
@@ -326,15 +367,16 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
         variants={fadeUpVariant}
         className="py-24 px-6 md:px-12 max-w-7xl mx-auto"
       >
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div className="relative max-w-sm mx-auto md:mr-12">
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-16 items-center">
+          {/* DESKTOP ONLY: IMAGE */}
+          <div className="hidden md:block relative max-w-sm mx-auto md:mr-12">
             <img 
               src="/agent.png" 
               alt="Founder Portrait" 
               className="w-full h-auto object-contain drop-shadow-2xl"
               referrerPolicy="no-referrer"
             />
-            <div className="absolute -bottom-8 -right-8 bg-brand-deep-red text-white p-8 rounded-2xl hidden md:block max-w-xs shadow-xl">
+            <div className="absolute -bottom-8 -right-8 bg-brand-deep-red text-white p-8 rounded-2xl max-w-xs shadow-xl">
               <p className="font-serif text-xl italic leading-snug">
                 "Traveling shouldn't be<br />
                 a moment in time,<br />
@@ -343,7 +385,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
             </div>
           </div>
           
-          <div>
+          <div className="w-full">
             <span className="text-brand-earth font-bold tracking-wider uppercase text-sm">Your Local Connection</span>
             <h2 className="text-4xl md:text-5xl font-serif font-bold text-brand-deep-red mt-4 mb-6 leading-tight">
               Let's Journey Together.
@@ -360,7 +402,32 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
               </p>
             </div>
             
-            <div className="mt-10 flex items-center gap-8">
+            {/* MOBILE ONLY: IMAGE AND ICONS (Side by side) */}
+            <div className="mt-8 flex md:hidden items-center gap-6 w-full">
+              <img 
+                src="/agent.png" 
+                alt="Founder Portrait Mobile" 
+                className="w-1/2 h-auto object-contain drop-shadow-2xl"
+                referrerPolicy="no-referrer"
+              />
+              <div className="flex flex-col gap-6 w-1/2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 text-brand-deep-red font-medium">
+                  <div className="w-10 h-10 rounded-full bg-olive-100 flex items-center justify-center shrink-0">
+                    <MapPin className="w-5 h-5 text-brand-olive" />
+                  </div>
+                  <span className="text-sm leading-tight text-left">Dordrecht Based</span>
+                </div>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 text-brand-deep-red font-medium">
+                  <div className="w-10 h-10 rounded-full bg-olive-100 flex items-center justify-center shrink-0">
+                    <Compass className="w-5 h-5 text-brand-olive" />
+                  </div>
+                  <span className="text-sm leading-tight text-left">SA Native</span>
+                </div>
+              </div>
+            </div>
+
+            {/* DESKTOP ONLY: ICONS */}
+            <div className="hidden md:flex mt-10 items-center gap-8">
               <div className="flex items-center gap-3 text-brand-deep-red font-medium">
                 <div className="w-10 h-10 rounded-full bg-olive-100 flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-brand-olive" />
@@ -410,20 +477,21 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
             {/* Timeline Connecting Line (Desktop) */}
             <div className="hidden lg:block absolute top-[68px] left-[12%] right-[12%] h-px border-t-2 border-dashed border-white/30 z-0"></div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 relative items-start">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 relative items-start">
               {/* Step 1 */}
               <motion.div 
+                onClick={() => setActiveStep(activeStep === 1 ? null : 1)}
                 className="bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 relative z-10 border border-white/20 flex flex-col cursor-pointer group"
                 whileHover={{ y: -5 }}
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="text-4xl font-serif font-bold text-brand-olive opacity-60">1</div>
-                  <div className="bg-brand-olive/10 p-2 rounded-full group-hover:rotate-90 transition-transform duration-500">
+                  <div className={`bg-brand-olive/10 p-2 rounded-full transition-transform duration-500 ${activeStep === 1 ? 'rotate-90' : 'md:group-hover:rotate-90'}`}>
                     <ChevronRight className="w-4 h-4 text-brand-olive" />
                   </div>
                 </div>
                 <h3 className="text-xl font-serif font-bold text-stone-900 mb-2 uppercase tracking-wide">Your Dream, Your Way</h3>
-                <div className="overflow-hidden max-h-0 group-hover:max-h-[400px] transition-all duration-700 ease-in-out opacity-0 group-hover:opacity-100">
+                <div className={`overflow-hidden transition-all duration-700 ease-in-out ${activeStep === 1 ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0 md:group-hover:max-h-[800px] md:group-hover:opacity-100'}`}>
                   <div className="pt-4 border-t border-stone-200 mt-2">
                     <p className="text-stone-600 leading-relaxed font-light text-base">
                       We start with a personal consultation where we get to know you, your travel style, interests, pace, and what would make this journey truly unforgettable.
@@ -437,17 +505,18 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
               
               {/* Step 2 */}
               <motion.div 
+                onClick={() => setActiveStep(activeStep === 2 ? null : 2)}
                 className="bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 relative z-10 border border-white/20 flex flex-col cursor-pointer group"
                 whileHover={{ y: -5 }}
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="text-4xl font-serif font-bold text-brand-olive opacity-60">2</div>
-                  <div className="bg-brand-olive/10 p-2 rounded-full group-hover:rotate-90 transition-transform duration-500">
+                  <div className={`bg-brand-olive/10 p-2 rounded-full transition-transform duration-500 ${activeStep === 2 ? 'rotate-90' : 'md:group-hover:rotate-90'}`}>
                     <ChevronRight className="w-4 h-4 text-brand-olive" />
                   </div>
                 </div>
                 <h3 className="text-xl font-serif font-bold text-stone-900 mb-2 uppercase tracking-wide">Your Tailor-Made Itinerary</h3>
-                <div className="overflow-hidden max-h-0 group-hover:max-h-[400px] transition-all duration-700 ease-in-out opacity-0 group-hover:opacity-100">
+                <div className={`overflow-hidden transition-all duration-700 ease-in-out ${activeStep === 2 ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0 md:group-hover:max-h-[800px] md:group-hover:opacity-100'}`}>
                   <div className="pt-4 border-t border-stone-200 mt-2">
                     <p className="text-stone-600 leading-relaxed font-light text-base">
                       After our session, I carefully design a fully personalised travel itinerary based on everything you’ve shared with us.
@@ -461,17 +530,18 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
               
               {/* Step 3 */}
               <motion.div 
+                onClick={() => setActiveStep(activeStep === 3 ? null : 3)}
                 className="bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 relative z-10 border border-white/20 flex flex-col cursor-pointer group"
                 whileHover={{ y: -5 }}
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="text-4xl font-serif font-bold text-brand-olive opacity-60">3</div>
-                  <div className="bg-brand-olive/10 p-2 rounded-full group-hover:rotate-90 transition-transform duration-500">
+                  <div className={`bg-brand-olive/10 p-2 rounded-full transition-transform duration-500 ${activeStep === 3 ? 'rotate-90' : 'md:group-hover:rotate-90'}`}>
                     <ChevronRight className="w-4 h-4 text-brand-olive" />
                   </div>
                 </div>
                 <h3 className="text-xl font-serif font-bold text-stone-900 mb-2 uppercase tracking-wide">Your Itinerary Reveal</h3>
-                <div className="overflow-hidden max-h-0 group-hover:max-h-[400px] transition-all duration-700 ease-in-out opacity-0 group-hover:opacity-100">
+                <div className={`overflow-hidden transition-all duration-700 ease-in-out ${activeStep === 3 ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0 md:group-hover:max-h-[800px] md:group-hover:opacity-100'}`}>
                   <div className="pt-4 border-t border-stone-200 mt-2">
                     <p className="text-stone-600 leading-relaxed font-light text-base">
                       We then meet again to walk you through your custom designed journey. This is where your trip comes to life.
@@ -485,17 +555,18 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
 
               {/* Step 4 */}
               <motion.div 
+                onClick={() => setActiveStep(activeStep === 4 ? null : 4)}
                 className="bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 relative z-10 border border-white/20 flex flex-col cursor-pointer group"
                 whileHover={{ y: -5 }}
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="text-4xl font-serif font-bold text-brand-olive opacity-60">4</div>
-                  <div className="bg-brand-olive/10 p-2 rounded-full group-hover:rotate-90 transition-transform duration-500">
+                  <div className={`bg-brand-olive/10 p-2 rounded-full transition-transform duration-500 ${activeStep === 4 ? 'rotate-90' : 'md:group-hover:rotate-90'}`}>
                     <ChevronRight className="w-4 h-4 text-brand-olive" />
                   </div>
                 </div>
                 <h3 className="text-xl font-serif font-bold text-stone-900 mb-2 uppercase tracking-wide">You travel, I support</h3>
-                <div className="overflow-hidden max-h-0 group-hover:max-h-[400px] transition-all duration-700 ease-in-out opacity-0 group-hover:opacity-100">
+                <div className={`overflow-hidden transition-all duration-700 ease-in-out ${activeStep === 4 ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0 md:group-hover:max-h-[800px] md:group-hover:opacity-100'}`}>
                   <div className="pt-4 border-t border-stone-200 mt-2">
                     <p className="text-stone-600 leading-relaxed font-light text-base">
                       While you’re on the road, I am just a message away. You enjoy the magic of Africa while I handle the background details and support.
@@ -540,177 +611,43 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
-            {/* Card 1: Wildlife */}
-            <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
-              <img 
-                src="/wildlife.jpg"
-                alt="South African Lion"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 transition-all duration-500 group-hover:h-full group-hover:from-black/90 group-hover:via-black/60" />
-              <div className="relative z-20 flex flex-col justify-end">
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-0 group-hover:mb-2 transition-all duration-500">Wildlife</h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out">
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 font-light text-sm md:text-base leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mt-2">Experience the thrill of spotting the Big Five (and so much more) in their natural, untamed habitat.</p>
+            {discoverCards.map((card) => {
+              const isActive = activeDiscoverCard === card.id;
+              
+              return (
+                <div 
+                  key={card.id} 
+                  onClick={() => setActiveDiscoverCard(isActive ? null : card.id)}
+                  className={`${card.colSpan} relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end cursor-pointer`}
+                >
+                  <img 
+                    src={card.imgSrc}
+                    alt={card.alt}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className={`absolute inset-0 transition-colors duration-500 z-10 ${isActive ? 'bg-black/40' : 'bg-black/0 group-hover:bg-black/40'}`} />
+                  <div className={`absolute inset-x-0 bottom-0 transition-all duration-500 z-10 ${isActive ? 'h-full bg-gradient-to-t from-black/90 via-black/60 to-transparent' : 'h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:h-full group-hover:from-black/90 group-hover:via-black/60'}`} />
+                  <div className="relative z-20 flex flex-col justify-end">
+                    <div className={`flex items-center justify-between transition-all duration-500 ${isActive ? 'mb-2' : 'mb-0 group-hover:mb-2'}`}>
+                      <h3 className="text-xl md:text-2xl font-serif font-bold text-white pr-4">{card.title}</h3>
+                      <div className={card.showArrow ? 'block' : 'hidden md:block'}>
+                        <div className={`bg-white/20 p-1 md:p-1.5 rounded-full transition-all duration-500 shrink-0 ${isActive ? 'rotate-90 opacity-100' : 'opacity-100 md:group-hover:rotate-90'}`}>
+                          <ChevronRight className="w-4 h-4 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className={`transition-[grid-template-rows] duration-500 ease-in-out grid ${isActive ? 'grid-rows-[1fr]' : 'grid-rows-[0fr] group-hover:grid-rows-[1fr]'}`}>
+                      <div className="overflow-hidden">
+                        <p className={`text-white/90 font-light text-sm md:text-base leading-relaxed mt-2 transition-opacity duration-500 delay-100 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                          {card.text}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            {/* Card 2: Cuisine */}
-            <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
-              <img 
-                src="/cuisine.jpg"
-                alt="South African Cuisine Braai"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 transition-all duration-500 group-hover:h-full group-hover:from-black/90 group-hover:via-black/60" />
-              <div className="relative z-20 flex flex-col justify-end">
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-0 group-hover:mb-2 transition-all duration-500">Cuisine</h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out">
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 font-light text-sm md:text-base leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mt-2">From traditional braais to Cape Malay spices, discover a world of vibrant flavours.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Card 3: Coastlines */}
-            <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
-              <img 
-                src="/coastlines.jpg"
-                alt="South African Coastline"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 transition-all duration-500 group-hover:h-full group-hover:from-black/90 group-hover:via-black/60" />
-              <div className="relative z-20 flex flex-col justify-end">
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-0 group-hover:mb-2 transition-all duration-500">Coastlines</h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out">
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 font-light text-sm md:text-base leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mt-2">Explore pristine beaches and dramatic cliffs where two oceans meet.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Card 4: Golden sunsets */}
-            <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
-              <img 
-                src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=2072&auto=format&fit=crop"
-                alt="African Golden Sunset"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 transition-all duration-500 group-hover:h-full group-hover:from-black/90 group-hover:via-black/60" />
-              <div className="relative z-20 flex flex-col justify-end">
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-0 group-hover:mb-2 transition-all duration-500">Golden sunsets</h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out">
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 font-light text-sm md:text-base leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mt-2">Watch the African sky catch fire with breathtaking sunsets you'll never forget.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Card 5: Diverse landscapes */}
-            <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
-              <img 
-                src="/landscapes.jpg"
-                alt="Drakensberg Mountains South Africa"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 transition-all duration-500 group-hover:h-full group-hover:from-black/90 group-hover:via-black/60" />
-              <div className="relative z-20 flex flex-col justify-end">
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-0 group-hover:mb-2 transition-all duration-500">Diverse landscapes</h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out">
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 font-light text-sm md:text-base leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mt-2">From red desert dunes to lush green forests and towering mountain peaks.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Card 6: World class wine */}
-            <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
-              <img 
-                src="/wine.jpg"
-                alt="South African Winelands Vineyard and Wine Glass"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 transition-all duration-500 group-hover:h-full group-hover:from-black/90 group-hover:via-black/60" />
-              <div className="relative z-20 flex flex-col justify-end">
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-0 group-hover:mb-2 transition-all duration-500">World class wine</h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out">
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 font-light text-sm md:text-base leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mt-2">Sip award-winning vintages in the historic, oak-lined vineyards of the Cape.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Card 7: Sleepy towns */}
-            <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
-              <img 
-                src="/towns.jpg"
-                alt="South African Karoo Town"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 transition-all duration-500 group-hover:h-full group-hover:from-black/90 group-hover:via-black/60" />
-              <div className="relative z-20 flex flex-col justify-end">
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-0 group-hover:mb-2 transition-all duration-500">Sleepy towns</h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out">
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 font-light text-sm md:text-base leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mt-2">Discover the charm of quiet coastal villages and historic Karoo dorps.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Card 8: History & culture */}
-            <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
-              <img 
-                src="/history.jpg"
-                alt="Bo-Kaap Cape Town History"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 transition-all duration-500 group-hover:h-full group-hover:from-black/90 group-hover:via-black/60" />
-              <div className="relative z-20 flex flex-col justify-end">
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-0 group-hover:mb-2 transition-all duration-500">History & Culture</h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out">
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 font-light text-sm md:text-base leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mt-2">A rich tapestry of stories and traditions that shape the vibrant soul of the continent.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Card 9: Art */}
-            <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
-              <img 
-                src="/art.webp"
-                alt="South African Art Gallery"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 transition-all duration-500 group-hover:h-full group-hover:from-black/90 group-hover:via-black/60" />
-              <div className="relative z-20 flex flex-col justify-end">
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-white mb-0 group-hover:mb-2 transition-all duration-500">Art</h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out">
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 font-light text-sm md:text-base leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mt-2">Discover contemporary masterpieces and ancient rock art in local galleries and beyond.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </motion.section>
@@ -1011,7 +948,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
               </p>
             </div>
             <div className="flex flex-col md:justify-end items-start md:items-end">
-              <div className="flex flex-col gap-4 text-stone-300 font-light">
+              <div className="flex flex-col gap-4 text-stone-300 font-light w-full md:w-[360px]">
                 <div className="flex items-start md:items-center gap-3">
                   <MapPin className="w-5 h-5 shrink-0 mt-0.5 md:mt-0" />
                   <span>Kilwijkstraat, Dordrecht, Netherlands, 3311 WN</span>
@@ -1019,14 +956,19 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
                 <a href="tel:+31615480472" className="flex items-center gap-3 hover:text-white transition-colors">
                   <Phone className="w-5 h-5 shrink-0" /> +31 6 15480472
                 </a>
-                <a href="mailto:book@youniquelyafrica.com" className="flex items-center gap-3 hover:text-white transition-colors">
-                  <Mail className="w-5 h-5 shrink-0" /> book@youniquelyafrica.com
+                <a href="mailto:book@uniquelyafrica.com" className="flex items-center gap-3 hover:text-white transition-colors">
+                  <Mail className="w-5 h-5 shrink-0" /> book@uniquelyafrica.com
                 </a>
               </div>
             </div>
           </div>
-          <div className="pt-8 border-t border-stone-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-light">
+          <div className="pt-8 border-t border-stone-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm font-light">
             <p>© {new Date().getFullYear()} YOUniquely Africa | KVK: 42047666</p>
+            <div className="flex flex-col items-start md:items-end w-full md:w-auto">
+              <div className="w-full md:w-[360px]">
+                <p className="text-stone-500 text-[10px] uppercase tracking-widest text-left">Drone footage by Scenic Relaxation</p>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
