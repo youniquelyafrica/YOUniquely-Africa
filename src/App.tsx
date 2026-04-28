@@ -72,7 +72,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
       
       try {
         const link = document.createElement('a');
-        link.href = `mailto:book@uniquelyafrica.com?subject=${subject}&body=${body}`;
+        link.href = `mailto:book@youniquelyafrica.com?subject=${subject}&body=${body}`;
         link.target = '_blank';
         link.click();
       } catch (mailtoErr) {
@@ -956,8 +956,8 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
                 <a href="tel:+31615480472" className="flex items-center gap-3 hover:text-white transition-colors">
                   <Phone className="w-5 h-5 shrink-0" /> +31 6 15480472
                 </a>
-                <a href="mailto:book@uniquelyafrica.com" className="flex items-center gap-3 hover:text-white transition-colors">
-                  <Mail className="w-5 h-5 shrink-0" /> book@uniquelyafrica.com
+                <a href="mailto:book@youniquelyafrica.com" className="flex items-center gap-3 hover:text-white transition-colors">
+                  <Mail className="w-5 h-5 shrink-0" /> book@youniquelyafrica.com
                 </a>
               </div>
             </div>
