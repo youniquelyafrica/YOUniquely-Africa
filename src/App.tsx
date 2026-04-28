@@ -619,7 +619,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
             {/* Card 5: Diverse landscapes */}
             <div className="relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end">
               <img 
-                src="/landscapes.JPG"
+                src="/landscapes.jpg"
                 alt="Drakensberg Mountains South Africa"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
