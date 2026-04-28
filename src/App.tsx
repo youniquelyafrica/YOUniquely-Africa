@@ -4,16 +4,26 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Logo } from './components/Logo';
 import { fetchBookings, createBooking } from './firebase';
 
+import imgWildlife from './assets/wildlife.jpg';
+import imgCuisine from './assets/cuisine.jpg';
+import imgCoastlines from './assets/coastlines.jpg';
+import imgLandscapes from './assets/landscapes.jpg';
+import imgWine from './assets/wine.jpg';
+import imgTowns from './assets/towns.jpg';
+import imgHistory from './assets/history.jpg';
+import imgArt from './assets/art.webp';
+import imgAgent from './assets/agent.png';
+
 const discoverCards = [
-  { id: 1, title: 'Wildlife', imgSrc: '/wildlife.jpg', text: 'Experience the thrill of spotting the Big Five (and so much more) in their natural, untamed habitat.', alt: 'South African Lion', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
-  { id: 2, title: 'Cuisine', imgSrc: '/cuisine.jpg', text: 'From traditional braais to Cape Malay spices, discover a world of vibrant flavours.', alt: 'South African Cuisine Braai', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
-  { id: 3, title: 'Coastlines', imgSrc: '/coastlines.jpg', text: 'Explore pristine beaches and dramatic cliffs where two oceans meet.', alt: 'South African Coastline', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 1, title: 'Wildlife', imgSrc: imgWildlife, text: 'Experience the thrill of spotting the Big Five (and so much more) in their natural, untamed habitat.', alt: 'South African Lion', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
+  { id: 2, title: 'Cuisine', imgSrc: imgCuisine, text: 'From traditional braais to Cape Malay spices, discover a world of vibrant flavours.', alt: 'South African Cuisine Braai', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 3, title: 'Coastlines', imgSrc: imgCoastlines, text: 'Explore pristine beaches and dramatic cliffs where two oceans meet.', alt: 'South African Coastline', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
   { id: 4, title: 'Golden sunsets', imgSrc: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=2072&auto=format&fit=crop', text: "Watch the African sky catch fire with breathtaking sunsets you'll never forget.", alt: 'African Golden Sunset', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
-  { id: 5, title: 'Diverse landscapes', imgSrc: '/landscapes.jpg', text: 'From red desert dunes to lush green forests and towering mountain peaks.', alt: 'Drakensberg Mountains South Africa', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
-  { id: 6, title: 'World class wine', imgSrc: '/wine.jpg', text: 'Sip award-winning vintages in the historic, oak-lined vineyards of the Cape.', alt: 'South African Winelands Vineyard and Wine Glass', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
-  { id: 7, title: 'Sleepy towns', imgSrc: '/towns.jpg', text: 'Discover the charm of quiet coastal villages and historic Karoo dorps.', alt: 'South African Karoo Town', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
-  { id: 8, title: 'History & Culture', imgSrc: '/history.jpg', text: 'A rich tapestry of stories and traditions that shape the vibrant soul of the continent.', alt: 'Bo-Kaap Cape Town History', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
-  { id: 9, title: 'Art', imgSrc: '/art.webp', text: 'Discover contemporary masterpieces and ancient rock art in local galleries and beyond.', alt: 'South African Art Gallery', colSpan: 'col-span-1 md:col-span-1', showArrow: true }
+  { id: 5, title: 'Diverse landscapes', imgSrc: imgLandscapes, text: 'From red desert dunes to lush green forests and towering mountain peaks.', alt: 'Drakensberg Mountains South Africa', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 6, title: 'World class wine', imgSrc: imgWine, text: 'Sip award-winning vintages in the historic, oak-lined vineyards of the Cape.', alt: 'South African Winelands Vineyard and Wine Glass', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 7, title: 'Sleepy towns', imgSrc: imgTowns, text: 'Discover the charm of quiet coastal villages and historic Karoo dorps.', alt: 'South African Karoo Town', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
+  { id: 8, title: 'History & Culture', imgSrc: imgHistory, text: 'A rich tapestry of stories and traditions that shape the vibrant soul of the continent.', alt: 'Bo-Kaap Cape Town History', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 9, title: 'Art', imgSrc: imgArt, text: 'Discover contemporary masterpieces and ancient rock art in local galleries and beyond.', alt: 'South African Art Gallery', colSpan: 'col-span-1 md:col-span-1', showArrow: true }
 ];
 
 export default function App() {
@@ -383,7 +393,7 @@ export default function App() {
           {/* DESKTOP ONLY: IMAGE */}
           <div className="hidden md:block relative max-w-sm mx-auto md:mr-12">
             <img 
-              src="/agent.png" 
+              src={imgAgent} 
               alt="Founder Portrait" 
               className="w-full h-auto object-contain drop-shadow-2xl"
               referrerPolicy="no-referrer"
@@ -417,7 +427,7 @@ export default function App() {
             {/* MOBILE ONLY: IMAGE AND ICONS (Side by side) */}
             <div className="mt-8 flex md:hidden items-center gap-6 w-full">
               <img 
-                src="/agent.png" 
+                src={imgAgent} 
                 alt="Founder Portrait Mobile" 
                 className="w-1/2 h-auto object-contain drop-shadow-2xl"
                 referrerPolicy="no-referrer"
