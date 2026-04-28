@@ -6,14 +6,14 @@ import { fetchBookings, createBooking } from './firebase';
 
 const discoverCards = [
   { id: 1, title: 'Wildlife', imgSrc: '/wildlife.jpg', text: 'Experience the thrill of spotting the Big Five (and so much more) in their natural, untamed habitat.', alt: 'South African Lion', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
-  { id: 2, title: 'Cuisine', imgSrc: '/cuisine.jpg', text: 'From traditional braais to Cape Malay spices, discover a world of vibrant flavours.', alt: 'South African Cuisine Braai', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
-  { id: 3, title: 'Coastlines', imgSrc: '/coastlines.jpg', text: 'Explore pristine beaches and dramatic cliffs where two oceans meet.', alt: 'South African Coastline', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 2, title: 'Cuisine', imgSrc: '/cuisine.jpg', text: 'From traditional braais to Cape Malay spices, discover a world of vibrant flavours.', alt: 'South African Cuisine Braai', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 3, title: 'Coastlines', imgSrc: '/coastlines.jpg', text: 'Explore pristine beaches and dramatic cliffs where two oceans meet.', alt: 'South African Coastline', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
   { id: 4, title: 'Golden sunsets', imgSrc: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=2072&auto=format&fit=crop', text: "Watch the African sky catch fire with breathtaking sunsets you'll never forget.", alt: 'African Golden Sunset', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
-  { id: 5, title: 'Diverse landscapes', imgSrc: '/landscapes.jpg', text: 'From red desert dunes to lush green forests and towering mountain peaks.', alt: 'Drakensberg Mountains South Africa', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
-  { id: 6, title: 'World class wine', imgSrc: '/wine.jpg', text: 'Sip award-winning vintages in the historic, oak-lined vineyards of the Cape.', alt: 'South African Winelands Vineyard and Wine Glass', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 5, title: 'Diverse landscapes', imgSrc: '/landscapes.jpg', text: 'From red desert dunes to lush green forests and towering mountain peaks.', alt: 'Drakensberg Mountains South Africa', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 6, title: 'World class wine', imgSrc: '/wine.jpg', text: 'Sip award-winning vintages in the historic, oak-lined vineyards of the Cape.', alt: 'South African Winelands Vineyard and Wine Glass', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
   { id: 7, title: 'Sleepy towns', imgSrc: '/towns.jpg', text: 'Discover the charm of quiet coastal villages and historic Karoo dorps.', alt: 'South African Karoo Town', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
-  { id: 8, title: 'History & Culture', imgSrc: '/history.jpg', text: 'A rich tapestry of stories and traditions that shape the vibrant soul of the continent.', alt: 'Bo-Kaap Cape Town History', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
-  { id: 9, title: 'Art', imgSrc: '/art.webp', text: 'Discover contemporary masterpieces and ancient rock art in local galleries and beyond.', alt: 'South African Art Gallery', colSpan: 'col-span-1 md:col-span-1', showArrow: false }
+  { id: 8, title: 'History & Culture', imgSrc: '/history.jpg', text: 'A rich tapestry of stories and traditions that shape the vibrant soul of the continent.', alt: 'Bo-Kaap Cape Town History', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 9, title: 'Art', imgSrc: '/art.webp', text: 'Discover contemporary masterpieces and ancient rock art in local galleries and beyond.', alt: 'South African Art Gallery', colSpan: 'col-span-1 md:col-span-1', showArrow: true }
 ];
 
 export default function App() {
@@ -58,27 +58,6 @@ export default function App() {
     setIsSubmitting(true);
     try {
       await createBooking(formData);
-      
-      const subject = encodeURIComponent(`New Session Booking from ${formData.name}`);
-      const body = encodeURIComponent(`Name: ${formData.name}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Dates: ${formData.dates}
-Travellers: ${formData.travellers}
-Style: ${formData.style}
-Focus Area: ${formData.message}
-
-Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
-      
-      try {
-        const link = document.createElement('a');
-        link.href = `mailto:book@youniquelyafrica.com?subject=${subject}&body=${body}`;
-        link.target = '_blank';
-        link.click();
-      } catch (mailtoErr) {
-        console.warn("Could not open mail client", mailtoErr);
-      }
-
       setIsSubmitted(true);
       setFormData({
         name: '', email: '', phone: '', dates: '', travellers: '', style: '',
@@ -480,7 +459,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 relative items-start">
               {/* Step 1 */}
               <motion.div 
-                onClick={() => setActiveStep(activeStep === 1 ? null : 1)}
+                onClick={() => window.innerWidth < 768 && setActiveStep(activeStep === 1 ? null : 1)}
                 className="bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 relative z-10 border border-white/20 flex flex-col cursor-pointer group"
                 whileHover={{ y: -5 }}
               >
@@ -505,7 +484,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
               
               {/* Step 2 */}
               <motion.div 
-                onClick={() => setActiveStep(activeStep === 2 ? null : 2)}
+                onClick={() => window.innerWidth < 768 && setActiveStep(activeStep === 2 ? null : 2)}
                 className="bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 relative z-10 border border-white/20 flex flex-col cursor-pointer group"
                 whileHover={{ y: -5 }}
               >
@@ -530,7 +509,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
               
               {/* Step 3 */}
               <motion.div 
-                onClick={() => setActiveStep(activeStep === 3 ? null : 3)}
+                onClick={() => window.innerWidth < 768 && setActiveStep(activeStep === 3 ? null : 3)}
                 className="bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 relative z-10 border border-white/20 flex flex-col cursor-pointer group"
                 whileHover={{ y: -5 }}
               >
@@ -555,7 +534,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
 
               {/* Step 4 */}
               <motion.div 
-                onClick={() => setActiveStep(activeStep === 4 ? null : 4)}
+                onClick={() => window.innerWidth < 768 && setActiveStep(activeStep === 4 ? null : 4)}
                 className="bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 relative z-10 border border-white/20 flex flex-col cursor-pointer group"
                 whileHover={{ y: -5 }}
               >
@@ -617,7 +596,7 @@ Requested Session: ${formData.selectedDate} at ${formData.selectedTime}`);
               return (
                 <div 
                   key={card.id} 
-                  onClick={() => setActiveDiscoverCard(isActive ? null : card.id)}
+                  onClick={() => window.innerWidth < 768 && setActiveDiscoverCard(isActive ? null : card.id)}
                   className={`${card.colSpan} relative overflow-hidden group p-6 md:p-8 rounded-[2rem] border border-brand-olive/20 hover:border-brand-olive/40 transition-all duration-300 min-h-[220px] flex flex-col justify-end cursor-pointer`}
                 >
                   <img 
