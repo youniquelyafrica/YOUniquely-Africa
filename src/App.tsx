@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Calendar, Coffee, Compass, MessageCircle, ChevronRight, Plane, Send, Star, Mail, ChevronLeft, Clock, Phone, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Logo } from './components/Logo';
+import { FaLinkedin } from 'react-icons/fa';
 import { fetchBookings, createBooking } from './firebase';
 
 import imgWildlife from './assets/wildlife.jpg';
@@ -16,14 +17,14 @@ import imgAgent from './assets/agent.png';
 
 const discoverCards = [
   { id: 1, title: 'Wildlife', imgSrc: imgWildlife, text: 'Experience the thrill of spotting the Big Five (and so much more) in their natural, untamed habitat.', alt: 'South African Lion', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
-  { id: 2, title: 'Cuisine', imgSrc: imgCuisine, text: 'From traditional braais to Cape Malay spices, discover a world of vibrant flavours.', alt: 'South African Cuisine Braai', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
-  { id: 3, title: 'Coastlines', imgSrc: imgCoastlines, text: 'Explore pristine beaches and dramatic cliffs where two oceans meet.', alt: 'South African Coastline', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 2, title: 'Cuisine', imgSrc: imgCuisine, text: 'From traditional braais to Cape Malay spices, discover a world of vibrant flavours.', alt: 'South African Cuisine Braai', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 3, title: 'Coastlines', imgSrc: imgCoastlines, text: 'Explore pristine beaches and dramatic cliffs where two oceans meet.', alt: 'South African Coastline', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
   { id: 4, title: 'Golden sunsets', imgSrc: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=2072&auto=format&fit=crop', text: "Watch the African sky catch fire with breathtaking sunsets you'll never forget.", alt: 'African Golden Sunset', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
-  { id: 5, title: 'Diverse landscapes', imgSrc: imgLandscapes, text: 'From red desert dunes to lush green forests and towering mountain peaks.', alt: 'Drakensberg Mountains South Africa', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
-  { id: 6, title: 'World class wine', imgSrc: imgWine, text: 'Sip award-winning vintages in the historic, oak-lined vineyards of the Cape.', alt: 'South African Winelands Vineyard and Wine Glass', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
+  { id: 5, title: 'Diverse landscapes', imgSrc: imgLandscapes, text: 'From red desert dunes to lush green forests and towering mountain peaks.', alt: 'Drakensberg Mountains South Africa', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 6, title: 'World class wine', imgSrc: imgWine, text: 'Sip award-winning vintages in the historic, oak-lined vineyards of the Cape.', alt: 'South African Winelands Vineyard and Wine Glass', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
   { id: 7, title: 'Sleepy towns', imgSrc: imgTowns, text: 'Discover the charm of quiet coastal villages and historic Karoo dorps.', alt: 'South African Karoo Town', colSpan: 'col-span-2 md:col-span-1', showArrow: true },
-  { id: 8, title: 'History & Culture', imgSrc: imgHistory, text: 'A rich tapestry of stories and traditions that shape the vibrant soul of the continent.', alt: 'Bo-Kaap Cape Town History', colSpan: 'col-span-1 md:col-span-1', showArrow: true },
-  { id: 9, title: 'Art', imgSrc: imgArt, text: 'Discover contemporary masterpieces and ancient rock art in local galleries and beyond.', alt: 'South African Art Gallery', colSpan: 'col-span-1 md:col-span-1', showArrow: true }
+  { id: 8, title: 'History & Culture', imgSrc: imgHistory, text: 'A rich tapestry of stories and traditions that shape the vibrant soul of the continent.', alt: 'Bo-Kaap Cape Town History', colSpan: 'col-span-1 md:col-span-1', showArrow: false },
+  { id: 9, title: 'Art', imgSrc: imgArt, text: 'Discover contemporary masterpieces and ancient rock art in local galleries and beyond.', alt: 'South African Art Gallery', colSpan: 'col-span-1 md:col-span-1', showArrow: false }
 ];
 
 export default function App() {
@@ -980,6 +981,14 @@ export default function App() {
                 </a>
                 <a href="mailto:book@youniquelyafrica.com" className="flex items-center gap-3 hover:text-white transition-colors">
                   <Mail className="w-5 h-5 shrink-0" /> book@youniquelyafrica.com
+                </a>
+                <a 
+                  href="https://www.linkedin.com/company/youniquely-africa/about/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center gap-3 hover:text-white transition-colors"
+                >
+                  <FaLinkedin className="w-5 h-5 shrink-0" /> LinkedIn
                 </a>
               </div>
             </div>
