@@ -943,7 +943,7 @@ export default function App() {
           <div className="mt-16 text-center">
             <p className="text-stone-600 mb-6 font-medium">Prefer to chat? Message me directly on WhatsApp</p>
             <a 
-              href="https://wa.me/31615480472?text=Hi,%20I'm%20interested%20in%20planning%20a%20trip%20to%20South%20Africa%20with%20Uniquely%20Africa." 
+              href="https://wa.me/31615480472?text=Hi,%20I'm%20interested%20in%20planning%20a%20trip%20with%20YOUniquely%20Africa." 
               target="_blank" 
               rel="noopener noreferrer" 
               className="inline-flex items-center justify-center px-8 py-4 bg-[#25D366] text-white rounded-full font-medium text-lg hover:bg-[#20bd5a] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
@@ -1017,7 +1017,7 @@ export default function App() {
 
       {/* Floating WhatsApp Button */}
       <a 
-        href="https://wa.me/31615480472?text=Hi,%20I'm%20interested%20in%20planning%20a%20trip%20to%20South%20Africa%20with%20Uniquely%20Africa." 
+        href="https://wa.me/31615480472?text=Hi,%20I'm%20interested%20in%20planning%20a%20trip%20with%20YOUniquely%20Africa." 
         target="_blank" 
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 w-16 h-16 bg-[#25D366] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform duration-300 z-50 group"
