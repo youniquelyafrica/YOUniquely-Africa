@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Calendar, Coffee, Compass, MessageCircle, ChevronRight, Plane, Send, Star, Mail, ChevronLeft, Clock, Phone, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Logo } from './components/Logo';
-import { FaLinkedin } from 'react-icons/fa';
+import { FaLinkedin, FaInstagram } from 'react-icons/fa';
 import { fetchBookings, createBooking } from './firebase';
 
 import imgWildlife from './assets/wildlife.jpg';
@@ -974,7 +974,10 @@ export default function App() {
               <div className="flex flex-col gap-4 text-stone-300 font-light w-full md:w-[360px]">
                 <div className="flex items-start md:items-center gap-3">
                   <MapPin className="w-5 h-5 shrink-0 mt-0.5 md:mt-0" />
-                  <span>Kilwijkstraat, Dordrecht, Netherlands, 3311 WN</span>
+                  <span className="leading-relaxed">
+                    Kilwijkstraat, Dordrecht, Netherlands,<br />
+                    3311 WN
+                  </span>
                 </div>
                 <a href="tel:+31615480472" className="flex items-center gap-3 hover:text-white transition-colors">
                   <Phone className="w-5 h-5 shrink-0" /> +31 6 15480472
@@ -989,6 +992,14 @@ export default function App() {
                   className="flex items-center gap-3 hover:text-white transition-colors"
                 >
                   <FaLinkedin className="w-5 h-5 shrink-0" /> LinkedIn
+                </a>
+                <a 
+                  href="https://www.instagram.com/youniquelyafrica" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center gap-3 hover:text-white transition-colors"
+                >
+                  <FaInstagram className="w-5 h-5 shrink-0" /> Instagram
                 </a>
               </div>
             </div>
